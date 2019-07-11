@@ -1,72 +1,108 @@
 #include <iostream>
+#include <cmath>
 #include "SortTestHelper.h"
 #include "SelectionSort.h"
 #include "InsertSort.h"
 #include "MergeSort.h"
 #include "QuickSort.h"
+#include "Heap.h"
 
 using namespace std;
 
 template <typename T>
-void __quickSort3(T arr[], int l, int r){
+void heapSort1(T arr[], int n){
 
-    if(r - l <= 15){
-        //optimization 2
-        insertSort(arr, l, r);
-        return;
-    }
+    MaxHeap<T> maxHeap = MaxHeap<T>(n);
 
-    swap(arr[l],arr[rand()%(r-l+1)+l]);
+    for(int i=0;i<n;i++)
+        maxHeap.insert(arr[i]);
 
-    T p = arr[l];
-    int lt = l;
-    int gt = r+1;
-    int i = l+1;
-    while(i<gt){
-        if(arr[i] < p){
-            swap(arr[i],arr[lt+1]);
-            lt++;
-            i++;
-        }
-        else if(arr[i] > p){
-            swap(arr[i],arr[gt-1]);
-            gt--;
-        }
-        else{
-            i++;
-        }
-    }
-    swap(arr[l],arr[lt]);
-    __quickSort3(arr, l, lt-1);
-    __quickSort3(arr, gt, r);
+    for(int i=n-1;i>=0;i--)
+        arr[i]=maxHeap.extractMax();
 }
 
 template <typename T>
-void quickSort3(T arr[], int n){
+void  heapSort2(T arr[], int n){
 
-    srand(time(NULL));
-    __quickSort3(arr, 0, n-1);
+    MaxHeap<T> maxHeap = MaxHeap<T>(arr,n);
+    for(int i=n-1;i>=0;i--)
+        arr[i]=maxHeap.extractMax();
 }
 
 int main() {
     int n = 1000000;
-    int *arr = SortTestHelper::generateRandomArray(n,0,10);
-    int *arr2 = SortTestHelper::copyIntArray(arr,n);
-    int *arr3 = SortTestHelper::copyIntArray(arr,n);
-    int *arr4 = SortTestHelper::copyIntArray(arr,n);
-    //SortTestHelper::testSort("Selection Sort", selectionSort, arr, n);
+    cout<<"Test for Random Array, size = "<<n<<", random range [0, "<<n<<"]"<<endl;
+    int *arr1 = SortTestHelper::generateRandomArray(n,0,n);
+    int *arr2 = SortTestHelper::copyIntArray(arr1,n);
+    int *arr3 = SortTestHelper::copyIntArray(arr1,n);
+    int *arr4 = SortTestHelper::copyIntArray(arr1,n);
+    int *arr5 = SortTestHelper::copyIntArray(arr1,n);
+    //SortTestHelper::testSort("Selection Sort", selectionSort, arr1, n);
     //SortTestHelper::testSort("Insert Sort", insertSort, arr2, n);
     //SortTestHelper::testSort("Insert Sort2", insertSort2, arr3, n);
-    SortTestHelper::testSort("Merge Sort", mergeSort, arr4, n);
+    SortTestHelper::testSort("Merge Sort", mergeSort, arr1, n);
     //SortTestHelper::testSort("Merge SortBU", mergeSortBU, arr3, n);
-    //SortTestHelper::testSort("Quick Sort", quickSort, arr, n);
     SortTestHelper::testSort("Quick Sort2", quickSort2, arr2, n);
+    //SortTestHelper::testSort("Quick Sort2", quickSort2, arr2, n);
     SortTestHelper::testSort("Quick Sort3", quickSort3, arr3, n);
+    SortTestHelper::testSort("Heap Sort1", heapSort1, arr4, n);
+    SortTestHelper::testSort("Heap Sort2", heapSort2, arr5, n);
 
-
-    delete[] arr;
+    delete[] arr1;
     delete[] arr2;
     delete[] arr3;
     delete[] arr4;
+    delete[] arr5;
+
+
+    int swapTimes=100;
+    cout<<"Test for Random Nearly Ordered Array, size = "<<n<<", swap time = "<<swapTimes<<endl;
+    arr1 = SortTestHelper::generateNearlyOrderedArray(n,swapTimes);
+    arr2 = SortTestHelper::copyIntArray(arr1,n);
+    arr3 = SortTestHelper::copyIntArray(arr1,n);
+    arr4 = SortTestHelper::copyIntArray(arr1,n);
+    arr5 = SortTestHelper::copyIntArray(arr1,n);
+    SortTestHelper::testSort("Merge Sort", mergeSort, arr1, n);
+    SortTestHelper::testSort("Quick Sort", quickSort, arr2, n);
+    SortTestHelper::testSort("Quick Sort3", quickSort3, arr3, n);
+    SortTestHelper::testSort("Heap Sort1", heapSort1, arr4, n);
+    SortTestHelper::testSort("Heap Sort2", heapSort2, arr5, n);
+
+    delete[] arr1;
+    delete[] arr2;
+    delete[] arr3;
+    delete[] arr4;
+    delete[] arr5;
+
+
+    cout<<"Test for Random Array, size = "<<n<<", random range [0, 10]"<<endl;
+    arr1 = SortTestHelper::generateRandomArray(n,0,10);
+    arr2 = SortTestHelper::copyIntArray(arr1,n);
+    arr3 = SortTestHelper::copyIntArray(arr1,n);
+    arr4 = SortTestHelper::copyIntArray(arr1,n);
+    arr5 = SortTestHelper::copyIntArray(arr1,n);
+    SortTestHelper::testSort("Merge Sort", mergeSort, arr1, n);
+    SortTestHelper::testSort("Quick Sort2", quickSort2, arr2, n);
+    SortTestHelper::testSort("Quick Sort3", quickSort3, arr3, n);
+    SortTestHelper::testSort("Heap Sort1", heapSort1, arr4, n);
+    SortTestHelper::testSort("Heap Sort2", heapSort2, arr5, n);
+
+    delete[] arr1;
+    delete[] arr2;
+    delete[] arr3;
+    delete[] arr4;
+    delete[] arr5;
+//    MaxHeap<int> maxHeap = MaxHeap<int>(100);
+//
+//    srand(time(NULL));
+//    for(int i=0;i<50;i++)
+//        maxHeap.insert(rand()%100);
+//
+//    maxHeap.testPrint();
+//
+//    while(!maxHeap.isEmpty())
+//        cout<<maxHeap.extractMax()<<" ";
+//    cout<<endl;
+
     return 0;
 }
